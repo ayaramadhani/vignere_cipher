@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigenère PDF Workstation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">V</div>
+    <div><strong>VIGENÈRE / PDF WORKSTATION</strong><small>ENKRIPSI &amp; DEKRIPSI BERKAS PDF</small></div>
+  </div>
+  <span class="pill"><i></i>SERVER SIAP</span>
+</header>
+
+<main>
+  <p class="eyebrow">VIGENÈRE CIPHER · FILE PDF</p>
+  <h1>Enkripsi / Dekripsi PDF</h1>
+  <p class="sub">Unggah PDF, masukkan kunci, lalu pilih Enkripsi atau Dekripsi. Hasilnya otomatis terunduh.</p>
+
+  <div class="grid">
+    <section class="card">
+      <div class="card-head"><span><b>01</b> UNGGAH PDF</span><span id="fileState">BELUM ADA FILE</span></div>
+      <div class="card-body">
+        <label class="drop" id="drop" for="file">
+          <span class="ico">⬆</span>
+          <strong id="dropTitle">Klik untuk memilih PDF</strong>
+          <small id="dropSub">atau seret dan lepas file ke sini</small>
+          <input type="file" id="file" accept="application/pdf,.pdf">
+        </label>
+      </div>
+      <div class="divider"></div>
+
+      <div class="card-head flat"><span><b>02</b> KUNCI</span><span>WAJIB</span></div>
+      <div class="card-body">
+        <div class="keybox" id="keybox">
+          <span>🗝</span>
+          <input id="key" placeholder="Contoh: ORBITAL" autocomplete="off" spellcheck="false" aria-label="Kunci">
+          <span class="muted small" id="keyInfo">0 HURUF</span>
+          <span class="pill bad" id="keyBadge"><i></i>KOSONG</span>
+        </div>
+        <p class="small muted hint">Hanya huruf A–Z yang dipakai sebagai kunci. Simpan kunci ini: tanpa kunci yang sama, PDF tidak bisa dikembalikan.</p>
+        <div class="actions">
+          <button class="btn primary" id="encBtn" disabled>ENKRIPSI</button>
+          <button class="btn ghost" id="decBtn" disabled>DEKRIPSI</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="card-head"><span><b>03</b> STATUS</span><span id="stateTag">MENUNGGU</span></div>
+      <div class="status-box" id="statusBox" aria-live="polite">
+        <div class="spin" id="spin" hidden></div>
+        <p id="statusText">Pilih file PDF dan isi kunci untuk memulai.</p>
+      </div>
+      <div class="recent">
+        <div class="row-between small muted"><span>RIWAYAT SESI</span><span id="recentCount">00 FILE</span></div>
+        <ul id="recent"><li class="muted small">Belum ada proses.</li></ul>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer><span>VIGENÈRE ADALAH CIPHER KLASIK · JANGAN DIPAKAI UNTUK DATA SENSITIF</span></footer>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
