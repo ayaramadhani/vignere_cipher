@@ -2,11 +2,12 @@
   const $ = id => document.getElementById(id);
   const fileInput = $('file'), keyInput = $('key'), drop = $('drop');
   const encBtn = $('encBtn'), decBtn = $('decBtn');
-  let history = [];
 
-  const cleanKey = k => k.toUpperCase().replace(/[^A-Z]/g, '');
+  // Key dipakai APA ADANYA -- backend (crypto/vigenere.py) menerima huruf
+  // besar/kecil dan karakter apa pun, jadi JS di sini TIDAK BOLEH mengubah
+  // isi key (dulu ada bug: key difilter jadi huruf A-Z kapital saja,
+  // sehingga karakter lain diam-diam hilang sebelum dikirim ke server).
   const fmtSize = n => n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : n >= 1024 ? (n / 1024).toFixed(1) + ' KB' : n + ' B';
-  const pad = n => String(n).padStart(2, '0');
 
   function setStatus(text, type = '', tag = 'MENUNGGU', busy = false) {
     $('statusText').textContent = text;
@@ -16,13 +17,11 @@
   }
 
   function refresh() {
-    const key = cleanKey(keyInput.value);
+    const key = keyInput.value;
     const hasKey = key.length > 0;
     const hasFile = fileInput.files.length > 0;
-    $('keyInfo').textContent = `${key.length} HURUF`;
     $('keyBadge').className = 'pill' + (hasKey ? '' : ' bad');
     $('keyBadge').innerHTML = `<i></i>${hasKey ? 'KUNCI VALID' : 'KOSONG'}`;
-    $('keybox').classList.toggle('invalid', keyInput.value !== '' && !hasKey);
     const ready = hasKey && hasFile;
     encBtn.disabled = decBtn.disabled = !ready;
     if (ready && $('stateTag').textContent === 'MENUNGGU') setStatus('Siap. Pilih Enkripsi atau Dekripsi.', '', 'SIAP');
@@ -49,8 +48,8 @@
 
   async function process(action) {
     const file = fileInput.files[0];
-    const key = keyInput.value.trim();
-    if (!file || !cleanKey(key)) return;
+    const key = keyInput.value;
+    if (!file || !key) return;
     const label = action === 'encrypt' ? 'Mengenkripsi' : 'Mendekripsi';
     encBtn.disabled = decBtn.disabled = true;
     setStatus(`${label} ${file.name}…`, '', 'MEMPROSES', true);
@@ -77,9 +76,6 @@
       a.href = URL.createObjectURL(blob); a.download = name; a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 
-      const d = new Date();
-      history.unshift({ name, size: fmtSize(blob.size), when: `${pad(d.getHours())}:${pad(d.getMinutes())}`, action });
-      renderHistory();
       setStatus(`Selesai. ${name} sudah diunduh.`, 'ok', 'BERHASIL');
     } catch (e) {
       const offline = e instanceof TypeError;
@@ -87,12 +83,6 @@
     } finally {
       refresh();
     }
-  }
-
-  function renderHistory() {
-    $('recent').innerHTML = history.slice(0, 5).map(h =>
-      `<li><span><b>${h.name.replace(/</g, '&lt;')}</b>${h.action === 'encrypt' ? 'ENKRIPSI' : 'DEKRIPSI'} · ${h.when}</span><span>${h.size}</span></li>`).join('');
-    $('recentCount').textContent = `${pad(history.length)} FILE`;
   }
 
   fileInput.addEventListener('change', () => pickFile(fileInput.files[0]));

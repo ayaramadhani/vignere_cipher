@@ -31,7 +31,8 @@ from werkzeug.utils import secure_filename
 from pdf_handler.pdf_processor import process_pdf_full
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # batas upload 20 MB
+app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # batas upload 20 MB, sinkron dgn static/script.js
+
 
 def _error(message: str, status: int):
     return jsonify({"error": message}), status
